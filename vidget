@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+
+import subprocess
+import sys
+
+def run(cmd):
+    try:
+        subprocess.run(cmd, check=True)
+    except subprocess.CalledProcessError:
+        print("❌ Command failed:", " ".join(cmd))
+        sys.exit(1)
+    except FileNotFoundError:
+        print(f"❌ '{cmd[0]}' is not installed or not in PATH.")
+        sys.exit(1)
+
+def main():
+    print("\n🌸 V I D G E T — yt-dlp helper 🌸\n")
+
+    url = input("🔗 Enter link: ").strip()
+    if not url:
+        print("No link. Exiting.")
+        return
+
+    print("\n📜 Fetching formats...\n")
+    run(["yt-dlp", "-F", url])
+
+    fmt = input("\n🎯 Enter format code(s): ").strip()
+    if not fmt:
+        print("No format. Exiting.")
+        return
+
+    print("\n⬇️ Downloading...\n")
+    run([
+        "yt-dlp",
+        "-f", fmt,
+        "-o", "%(title)s.%(ext)s",
+        url
+    ])
+
+    print("\n✨ Done.\n")
+
+if __name__ == "__main__":
+    main()
